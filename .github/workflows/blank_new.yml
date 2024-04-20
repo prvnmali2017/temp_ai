@@ -1,33 +1,26 @@
-name: Daily Commit
+name:PR Populator
 
 on:
   schedule:
-    - cron: '*/3 * * * *' # Run every 5 minutes
+    - cron: '*/ 5* * * *' # Run every 5 minutes
 
 jobs:
-  build:
+  fake_commit_and_pr:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
       
-    - name: Setup Python
+    - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
 
-    - name: Download and Install GitHub CLI
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y curl
-        sudo apt-get install -y jq # This package is needed for parsing JSON
+    - name: Install dependencies
+      run: pip install faker PyGithub
 
-        DOWNLOAD_URL=$(curl -s https://api.github.com/repos/cli/cli/releases/latest | \
-          jq -r '.assets[] | select(.name | test("linux_amd64.deb")) | .browser_download_url')
-
-        curl -sL "$DOWNLOAD_URL" -o github-cli.deb
-        sudo dpkg -i github-cli.deb
-      
     - name: Run script
-      run: python script.py
+      run: python fake_commit_and_pr.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
