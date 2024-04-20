@@ -1,8 +1,8 @@
-name:PR Populator
+name: PR Populator
 
 on:
   schedule:
-    - cron: '*/ 5* * * *' # Run every 5 minutes
+    - cron: '*/5 * * * *' # Run every 5 minutes
 
 jobs:
   fake_commit_and_pr:
